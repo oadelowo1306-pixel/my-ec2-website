@@ -1,0 +1,124 @@
+<h1>Hello from my first cloud website </h1> <p>I just deployed this 
+using AWS EC2 and nginxs!<br> and would consistently
+keep praticing till am better than who i was and guess what still pratice again. </p>
+<br> Yh so now want to try and link this folder to a folder in a container that I just made. An now i have just made some edit which will now 
+servces as my version2 for my website container
+<hr>
+
+<h2>Products</h2>
+
+<div id="products">Loading products...</div>
+
+<script>
+function loadProducts() {
+    const productsDiv = document.getElementById("products");
+
+    productsDiv.innerHTML = "Loading products...";
+
+    fetch("/api/products")
+        .then(response => response.json())
+        .then(data => {
+            productsDiv.innerHTML = "";
+
+            data.products.forEach(product => {
+    const item = document.createElement("p");
+
+    item.textContent =
+        product.name + " - $" + product.price + " ";
+    const updateButton = document.createElement("button");
+updateButton.textContent = "Update";
+
+updateButton.addEventListener("click", function () {
+    const newPrice = prompt("Enter new price:");
+
+    if (newPrice === null) {
+        return;
+    }
+
+    fetch("/api/products/" + product.id, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            price: Number(newPrice)
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Update failed: " + response.status);
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        loadProducts();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+});
+
+item.appendChild(updateButton);    
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", function () {
+    
+fetch("/api/products/" + product.id, {
+    method: "DELETE"
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error("Delete failed: " + response.status);
+    }
+
+    return response.json();
+})
+.then(data => {
+    console.log(data);
+    loadProducts();
+})
+.catch(error => {
+    console.error(error);
+});   
+    
+});
+    item.appendChild(deleteButton);
+
+    productsDiv.appendChild(item);
+});
+        })
+        .catch(error => {
+            productsDiv.textContent = "Failed to load products.";
+            console.error(error);
+        });
+}
+
+loadProducts();
+</script>
+
+<button id="addProduct">Add Mouse</button>
+<script>
+document.getElementById("addProduct").addEventListener("click", function () {
+    fetch("/api/products", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: "Mouse",
+            price: 25
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+    console.log(data);
+    loadProducts();
+})
+    .catch(error => {
+        console.error(error);
+    });
+}); </script>
