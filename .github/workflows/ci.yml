@@ -21,5 +21,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to EC2
-        run: echo "CD will deploy here"
+      - name: Test SSH connection
+        run:  |
+              echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+              chmod 600 ec2_key.pem
+              ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ vars.EC2_USER }}@${{ vars.EC2_HOST }} "echo SSH connection successful"
