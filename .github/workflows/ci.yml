@@ -15,3 +15,11 @@ jobs:
 
       - name: Build Docker images
         run: docker compose build
+  
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        run: echo "CD will deploy here"
