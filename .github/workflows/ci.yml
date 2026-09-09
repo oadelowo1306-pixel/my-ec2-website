@@ -25,4 +25,4 @@ jobs:
         run:  |
               echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
               chmod 600 ec2_key.pem
-              ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ vars.EC2_USER }}@${{ vars.EC2_HOST }} "echo SSH connection successful"
+              ssh -o StrictHostKeyChecking=no -i ec2_key.pem ${{ vars.EC2_USER }}@${{ vars.EC2_HOST }} "cd /var/www/html && git pull && sudo docker compose up -d --build"
